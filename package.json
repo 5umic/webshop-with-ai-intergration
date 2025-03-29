@@ -1,0 +1,33 @@
+{
+  "name": "gik2xk-grupp13-projekt",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://5umic: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@github.com/5umic/gik2xk-grupp13-projekt.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/5umic/gik2xk-grupp13-projekt/issues"
+  },
+  "homepage": "https://github.com/5umic/gik2xk-grupp13-projekt#readme",
+  "description": "",
+  "dependencies": {
+    "axios": "^1.8.4",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "mysql2": "^3.13.0",
+    "sequelize": "^6.37.6",
+    "sqlite3": "^5.1.7"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  }
+}
