@@ -1,4 +1,3 @@
-// laddar in nödvändiga paket och konfigurerar servern
 const sequelize = require("./database");
 const express = require("express");
 const cors = require("cors");
@@ -12,19 +11,19 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// importerar modellerna för databasen
+
 const User = require("./models/User");
 const Product = require("./models/Product");
 const Cart = require("./models/Cart");
 const Cart_Row = require("./models/Cart_Row");
 const Rating = require("./models/Rating");
 
-// enkel route för att kolla om servern funkar
+
 app.get("/", (req, res) => {
   res.send("Server is running!");
 });
 
-// hämtar alla användare, används typ inte just nu
+
 app.get("/users", async (req, res) => {
   try {
     const users = await User.findAll();
@@ -35,7 +34,7 @@ app.get("/users", async (req, res) => {
   }
 });
 
-// hämtar alla produkter
+
 app.get("/products", async (req, res) => {
   try {
     const products = await Product.findAll({
@@ -43,7 +42,7 @@ app.get("/products", async (req, res) => {
       distinct: true,
     });
 
-    // lägger till snittbetyg för varje produkt
+
     const enriched = products.map((product) => {
       const ratings = product.Ratings || [];
       const averageRating =
@@ -64,7 +63,7 @@ app.get("/products", async (req, res) => {
   }
 });
 
-// hämtar en produkt baserat på id
+
 app.get("/products/:id", async (req, res) => {
   try {
     const product = await Product.findByPk(req.params.id);
@@ -78,7 +77,7 @@ app.get("/products/:id", async (req, res) => {
   }
 });
 
-// Get all ratings for a product
+
 app.get("/products/:productId/ratings", async (req, res) => {
   try {
     const product = await Product.findByPk(req.params.productId, {
@@ -119,7 +118,7 @@ app.get("/products/:productId/average-rating", async (req, res) => {
   }
 });
 
-// lägga till product till cart
+
 app.post("/cart/:userId/add", async (req, res) => {
   try {
     const { userId } = req.params;
@@ -158,7 +157,7 @@ app.post("/cart/:userId/add", async (req, res) => {
 });
 ;
 
-// öka quantity for a product in cart
+
 app.put("/cart/:userId/update/:productId", async (req, res) => {
   try {
     const { userId, productId } = req.params;
@@ -189,7 +188,7 @@ app.put("/cart/:userId/update/:productId", async (req, res) => {
 });
 
 
-// skaffa cart contents
+
 app.get("/cart/:userId", async (req, res) => {
   try {
     const cart = await Cart.findOne({
@@ -205,7 +204,7 @@ app.get("/cart/:userId", async (req, res) => {
   }
 });
 
-// ta bort product från cart
+
 app.delete("/cart/:userId/remove/:productId", async (req, res) => {
   const { userId, productId } = req.params;
 
@@ -234,7 +233,7 @@ app.delete("/cart/:userId/remove/:productId", async (req, res) => {
 });
 
 
-// lägga rating
+
 app.post("/products/:productId/rate", async (req, res) => {
   try {
     const { productId } = req.params;
@@ -256,7 +255,6 @@ app.post("/products/:productId/rate", async (req, res) => {
 });
 
 
-// admin autentisering
 app.post("/admin/auth", (req, res) => {
   console.log("auth request mottagen:", req.body);
 
@@ -270,7 +268,6 @@ app.post("/admin/auth", (req, res) => {
   }
 });
 
-// admin route för att skapa en produkt
 app.post("/admin/products/create", async (req, res) => {
   const { password, name, description, price, imageUrl } = req.body;
 
@@ -292,7 +289,6 @@ app.post("/admin/products/create", async (req, res) => {
   }
 });
 
-// admin route för att uppdatera en produkt
 app.put("/admin/products/:id", async (req, res) => {
   const { password, name, description, price, imageUrl } = req.body;
 
@@ -320,7 +316,6 @@ app.put("/admin/products/:id", async (req, res) => {
   }
 });
 
-// admin route för att ta bort en produkt
 app.post("/admin/products/delete/:id", async (req, res) => {
   const { password } = req.body;
 
@@ -357,15 +352,15 @@ app.post("/api/chat", async (req, res) => {
       content: `
     Du är en butiksassistent som kan både svara på kunders frågor och hantera deras kundvagn.
     
-    🛒 Om kunden vill LÄGGA TILL något i kundvagnen:
-    ✅ Du får INTE skriva någon vanlig mening.
-    ✅ Du får INTE förklara vad du gör.
-    ✅ Du ska ENDAST svara så här exakt:
+    Om kunden vill LÄGGA TILL något i kundvagnen:
+    Du får INTE skriva någon vanlig mening.
+    Du får INTE förklara vad du gör.
+    Du ska ENDAST svara så här exakt:
     ACTION: add-to-cart | id: [produktens ID]
     
-    🗑️ Om kunden vill TA BORT något från kundvagnen:
-    ❗️ Samma sak gäller: INGA vanliga meningar, INGEN förklaring.
-    ✅ Du svarar ENDAST så här exakt:
+    Om kunden vill TA BORT något från kundvagnen:
+    Samma sak gäller: INGA vanliga meningar, INGEN förklaring.
+    Du svarar ENDAST så här exakt:
     ACTION: remove-from-cart | id: [produktens ID]
     
     Exempel:
@@ -375,7 +370,7 @@ app.post("/api/chat", async (req, res) => {
     Fel: "Wireless har tagits bort från din kundvagn."
     Rätt: ACTION: remove-from-cart | id: 5
     
-    📚 Om kunden ställer vanliga frågor, som "Vad kostar produkten?" eller "Vad har ni?", då svarar du artigt och informativt på svenska.
+    Om kunden ställer vanliga frågor, som "Vad kostar produkten?" eller "Vad har ni?", då svarar du artigt och informativt på svenska.
     
     Här är produktlistan:
     ${productList}
@@ -440,7 +435,6 @@ app.post("/api/chat", async (req, res) => {
   }
 });
 
-// startar servern och skapar testdata
 sequelize.sync().then(async () => {
   console.log("alla tabeller är synkade ✅");
 
